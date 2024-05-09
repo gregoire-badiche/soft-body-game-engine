@@ -127,9 +127,7 @@ class Joint:
         # m est à .5 si le joint j est libre, car ils s'attirent tous les deux avec une force opposée
         # et à 1 si le joint j est bloqué, car uniquement self est attiré (l'autre ne bouge pas)
         m = .5
-        # mp e
-        
-        st utilisé pour trouver le vecteur se situant entre la tension avec le joint d'après et celle avec le joint d'avant
+        # mp est utilisé pour trouver le vecteur se situant entre la tension avec le joint d'après et celle avec le joint d'avant
         # si le joint est au bord, rien ne sert de faire la moyenne
         mp = .5
         if(j.locked == True):
