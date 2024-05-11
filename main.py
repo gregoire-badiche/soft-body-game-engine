@@ -19,17 +19,17 @@ running = True
 
 class Score:
     def __init__(self) -> None:
-        self.font=pygame.font.SysFont("arial", 100, bold=pygame.font.Font.bold)
+        self.font=pygame.font.SysFont("segoescript", 40)
         self.score=0
-        self.text=self.font.render("Your score : {}".format(self.score), True, (0,0,0))
+        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def update(self) -> None:
         self.score+=1
-        self.text=self.font.render("Your score : {}".format(self.score), True, (0,0,0))
+        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def draw(self) -> None:
         self.update()
-        screen.blit(self.text, (0, 0))
+        screen.blit(self.text, (1025, 179))
         return
 
 class Joint:
@@ -502,5 +502,3 @@ while running:
     score.draw()
     pygame.display.flip()
     dt = clock.tick(60)
-
-print(len(pygame.font.get_fonts()))
