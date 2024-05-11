@@ -414,8 +414,10 @@ class Shape:
         return
     
     def draw(self, *args):
-        for s in self.segments:
-            s.draw()
+        p = []
+        for po in self.points:
+            p.append((po.absx + po.x, po.absy + po.y))
+        pygame.draw.polygon(screen, "black", p)
         return
 
 b = Blob()
