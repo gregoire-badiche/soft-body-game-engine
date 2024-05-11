@@ -7,6 +7,7 @@ from time import sleep
 
 G:float = .5
 K:float = 3
+F:float = .05
 INFINITY:int = 10000
 
 pygame.init()
@@ -104,8 +105,8 @@ class Joint:
         # Adding a small padding to avoid glitching through
         # Change the value of d to make it bounce !!
         d = math.sqrt((f[0] - self.x -self.speedx) ** 2 + (f[1] - self.y - self.speedy) ** 2) * 100
-        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d
-        self.speedy = f[1] - self.y + (f[1] - self.y - self.speedy) / d
+        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d - (f[0] - e[0]) * F
+        self.speedy = f[1] - self.y + (f[1] - self.y - self.speedy) / d - (f[1] - e[1]) * F
         return
     
     def applyfriction(self):
