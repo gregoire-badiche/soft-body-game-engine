@@ -39,7 +39,7 @@ class Joint:
     def draw(self, x, y, *args):
         # pygame.draw.circle(screen, "black", (self.x, self.y), 10)
         pygame.draw.line(screen, "darkgoldenrod1", (self.x, self.y), (x, y), 11)
-        pygame.draw.circle(screen, "black", (self.x, self.y), 5)
+        pygame.draw.circle(screen, "darkgoldenrod1", (self.x, self.y), 5)
         # pygame.draw.circle(screen, "black", (x, y), 5)
         # pygame.draw.line(screen, "blue", (self.x, self.y), (self.x + self.speedx, self.y + self.speedy))
         return
