@@ -14,6 +14,9 @@ screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
 running = True
+pressed=False
+launched=False
+
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -463,9 +466,20 @@ while running:
     if(keys[pygame.K_RIGHT]):
         s.move(s.x + 3, s.y)
     if(keys[pygame.K_SPACE]):
-        s.rotate(s.angle - .1)
-    if(keys[pygame.K_c]):
-        s.rotate(s.angle + .1)
+        if s.angle<=math.pi/6:
+            s.rotate(s.angle + .05)
+        pressed=True
+    elif pressed:
+        if s.angle>=-math.pi/6:
+            s.rotate(s.angle - .1)
+        else:
+            launched=True
+            pressed=False
+    elif launched:
+        if s.angle<=-0.05:
+            s.rotate(s.angle + .05)
+        else:
+            launched=False
 
     b.update([s, ])
 
