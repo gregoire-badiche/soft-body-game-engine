@@ -3,7 +3,7 @@
 import pygame
 import math
 from random import randint
-from time import sleep
+from time import perf_counter
 
 G:float = .5
 K:float = 3
@@ -14,6 +14,7 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
+
 running = True
 
 
@@ -24,9 +25,25 @@ class Score:
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def update(self, azer) -> None:
+        self.flip = False
+        self.combo = 1
+        self.tic:float
         joints_list = azer.get_joints()
         if round(joints_list[0].getX()) == round(joints_list[len(joints_list)-1].getX()):
-            self.score+=100
+            self.tac = perf_counter()
+            print("CCCCCCCCCCCCCC")
+            if self.tac - self.tic <= 2:
+                self.combo+=1
+                self.score+=100*self.combo
+                self.tic = self.tac 
+                print("AAAAAAAAa")
+            else: 
+                self.score+=100
+                self.tic = self.tac 
+                print("BBBBBBBBBB")
+            
+        
+                
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def draw(self, azer) -> None:
