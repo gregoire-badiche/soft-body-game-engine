@@ -23,12 +23,14 @@ class Score:
         self.score=0
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
-    def update(self) -> None:
-        self.score+=1
+    def update(self, azer) -> None:
+        joints_list = azer.get_joints()
+        if round(joints_list[0].getX()) == round(joints_list[len(joints_list)-1].getX()):
+            self.score+=100
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
-    def draw(self) -> None:
-        self.update()
+    def draw(self, azer) -> None:
+        self.update(azer)
         screen.blit(self.text, (1025, 179))
         return
 
@@ -161,6 +163,8 @@ class Joint:
             self.rx += (x - xp) * ((self.distance * K - dist) / (dist)) * m * mp
             self.ry += (y - yp) * ((self.distance * K - dist) / (dist)) * m * mp
         return
+    def getX(self):
+        return self.x
 
 class Blob:
     def __init__(self, joints:list[Joint] = []) -> None:
@@ -169,6 +173,9 @@ class Blob:
 
     def __len__(self) -> int:
         return len(self.joints)
+
+    def get_joints(self):
+        return self.joints
 
     def addjoint(self, joint:Joint) -> int:
         self.joints.append(joint)
@@ -499,6 +506,6 @@ while running:
     # floor.draw()
     s.draw()
     b.draw()
-    score.draw()
+    score.draw(b)
     pygame.display.flip()
     dt = clock.tick(60)
