@@ -105,7 +105,7 @@ class Joint:
         # Adding a small padding to avoid glitching through
         # Change the value of d to make it bounce !!
         d = math.sqrt((f[0] - self.x -self.speedx) ** 2 + (f[1] - self.y - self.speedy) ** 2) * 100
-        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d - (f[0] - e[0]) * F
+        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d - (f[0] - e[0] - s.A[0] + s.prevA[0]) * F
         self.speedy = f[1] - self.y + (f[1] - self.y - self.speedy) / d - (f[1] - e[1]) * F
         return
     
@@ -260,6 +260,9 @@ class Segment:
         self.B = B
         self.nextA = self.A
         self.nextB = self.B
+        self.prevA = self.A
+        self.prevB = self.B
+        self.hasmoved = True
 
     @staticmethod
     def _intersect(A, B, C, D) -> bool:
@@ -332,8 +335,11 @@ class Segment:
         return
     
     def applymove(self, A, B) -> None:
+        self.prevA = self.A
+        self.prevB = self.B
         self.A = A
         self.B = B
+        self.hasmoved = True
         return
     
     def move(self, b:Blob) -> None:
@@ -342,6 +348,14 @@ class Segment:
         self.applymove(self.nextA, self.nextB)
         return
     
+    def update(self) -> None:
+        if(self.hasmoved):
+            self.hasmoved = False
+        else:
+            self.prevA = self.A
+            self.prevB = self.B
+        return
+
     def draw(self) -> None:
         pygame.draw.line(screen, "black", self.A, self.B, 10)
         return
@@ -416,6 +430,8 @@ class Shape:
     
     def draw(self, *args):
         p = []
+        for s in self.segments:
+            s.update()
         for po in self.points:
             p.append((po.absx + po.x, po.absy + po.y))
         pygame.draw.polygon(screen, "black", p)
