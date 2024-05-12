@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 running = True
 pressed=False
 launched=False
-
+angle=math.pi/6
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -466,11 +466,11 @@ while running:
     if(keys[pygame.K_RIGHT]):
         s.move(s.x + 3, s.y)
     if(keys[pygame.K_SPACE]):
-        if s.angle<=math.pi/6:
+        if s.angle<=angle:
             s.rotate(s.angle + .05)
         pressed=True
     elif pressed:
-        if s.angle>=-math.pi/6:
+        if s.angle>=-angle:
             s.rotate(s.angle - .1)
         else:
             launched=True
