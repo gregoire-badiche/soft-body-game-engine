@@ -19,18 +19,27 @@ running = True
 
 class Score:
     def __init__(self) -> None:
-        self.font=pygame.font.SysFont("segoescript", 40)
         self.score=0
+        self.font_size=40
+        self.coordinates=(1026, 180+(57-self.font_size)/2)
+        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def update(self) -> None:
         self.score+=1
-        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
+        self.text="Score : {}".format(self.score)
+        if len(self.text)>9:
+            self.font_size=int((50/len(self.text))*8)
+            self.coordinates=(1026, 180+(57-self.font_size)/2)
+            self.font=self.get_font(self.font_size)
+        self.rendred=self.font.render(self.text, True, (0,0,0))
         return
     def draw(self) -> None:
         self.update()
-        screen.blit(self.text, (1025, 179))
+        screen.blit(self.rendred, self.coordinates)
         return
+    def get_font(self, size):
+        return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
