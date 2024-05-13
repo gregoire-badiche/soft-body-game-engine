@@ -517,7 +517,7 @@ while running:
     if(keys[pygame.K_r]):
         b.joints=[]
         for i in range(20):
-            b.addjoint(Joint(s.x + 10 + i * 8, s.y-20, 8))
+            b.addjoint(Joint(s.x + 35 + i * 8, s.y-20, 8))
         b.fix()
 
 
