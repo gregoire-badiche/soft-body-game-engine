@@ -548,6 +548,7 @@ while running:
         for i in range(20):
             b.addjoint(Joint(s.x + 35 + i * 8, s.y-20, 8))
         b.fix()
+        score.score=0
 
     b.update([s, ])
 
