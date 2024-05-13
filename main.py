@@ -7,6 +7,7 @@ from time import perf_counter
 
 G:float = .5
 K:float = 3
+F:float = .05
 INFINITY:int = 10000
 cosmic_latte: tuple = (255,248,231)
 
@@ -16,13 +17,6 @@ screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
 
 running = True
-pressed=False
-launched=False
-angle=math.pi/6
-
-pressed=False
-launched=False
-angle=math.pi/6
 average:int =2              #average distance between the first and the last joint
 
 class Score:
@@ -67,7 +61,6 @@ class Score:
         return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
 
 
-
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
         self.x = x
@@ -92,7 +85,7 @@ class Joint:
     def draw(self, x, y, *args):
         # pygame.draw.circle(screen, "black", (self.x, self.y), 10)
         pygame.draw.line(screen, "darkgoldenrod1", (self.x, self.y), (x, y), 11)
-        pygame.draw.circle(screen, "black", (self.x, self.y), 5)
+        pygame.draw.circle(screen, "darkgoldenrod1", (self.x, self.y), 5)
         # pygame.draw.circle(screen, "black", (x, y), 5)
         # pygame.draw.line(screen, "blue", (self.x, self.y), (self.x + self.speedx, self.y + self.speedy))
         return
@@ -157,8 +150,8 @@ class Joint:
         # Adding a small padding to avoid glitching through
         # Change the value of d to make it bounce !!
         d = math.sqrt((f[0] - self.x -self.speedx) ** 2 + (f[1] - self.y - self.speedy) ** 2) * 100
-        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d
-        self.speedy = f[1] - self.y + (f[1] - self.y - self.speedy) / d
+        self.speedx = f[0] - self.x + (f[0] - self.x - self.speedx) / d - (f[0] - e[0] - s.A[0] + s.prevA[0]) * F
+        self.speedy = f[1] - self.y + (f[1] - self.y - self.speedy) / d - (f[1] - e[1]) * F
         return
     
     def applyfriction(self):
@@ -317,6 +310,9 @@ class Segment:
         self.B = B
         self.nextA = self.A
         self.nextB = self.B
+        self.prevA = self.A
+        self.prevB = self.B
+        self.hasmoved = True
 
     @staticmethod
     def _intersect(A, B, C, D) -> bool:
@@ -389,8 +385,11 @@ class Segment:
         return
     
     def applymove(self, A, B) -> None:
+        self.prevA = self.A
+        self.prevB = self.B
         self.A = A
         self.B = B
+        self.hasmoved = True
         return
     
     def move(self, b:Blob) -> None:
@@ -399,6 +398,14 @@ class Segment:
         self.applymove(self.nextA, self.nextB)
         return
     
+    def update(self) -> None:
+        if(self.hasmoved):
+            self.hasmoved = False
+        else:
+            self.prevA = self.A
+            self.prevB = self.B
+        return
+
     def draw(self) -> None:
         pygame.draw.line(screen, "black", self.A, self.B, 10)
         return
@@ -439,10 +446,11 @@ class Point:
         return
 
 class Shape:
-    def __init__(self, points:list = []) -> None:
+    def __init__(self, b:Blob, points:list = []) -> None:
         self.angle = 0
         self.x = 0
         self.y = 0
+        self.b = b
         self.points:list[Point] = []
         for p in points:
             self.points.append(Point(p))
@@ -460,7 +468,7 @@ class Shape:
         for p in self.points:
             p.move(self.x, self.y)
         for s in self.segments:
-            s.move(b)
+            s.move(self.b)
         return
 
     def rotate(self, angle:float) -> None:
@@ -468,96 +476,111 @@ class Shape:
         for p in self.points:
             p.rotate(self.angle)
         for s in self.segments:
-            s.move(b)
+            s.move(self.b)
         return
     
     def draw(self, *args):
+        p = []
         for s in self.segments:
-            s.draw()
+            s.update()
+        for po in self.points:
+            p.append((po.absx + po.x, po.absy + po.y))
+        pygame.draw.polygon(screen, "black", p)
         return
 
-b = Blob()
+def crepe(x, y):
+    a = Blob()
+    a.joints = []
+    for i in range(20):
+        a.addjoint(Joint(x + i * 8, y, 8))
+    a.fix()
+    return a
 
-s = Shape([
-    (0, 0),
-    (30, 20),
-    (200, 20),
-    (230, 0),
-    (245, 5),
-    (250, 20),
-    (240, 30),
-    (215, 45),
-    (15, 45),
-    (-10, 30),
-    (-20, 20),
-    (-15, 5),
-])
-# floor = Shape([(0, 0), (1280, 0)])
-# floor.move(0, 700)
-s.move(320, 200)
-# sg = [
-#     # Segment((350, 325), (400, 350)),
-#     Segment((400, 350), (600, 350)),
-#     # Segment((650, 325), (600, 350))
-# ]
-# j.append(Join(642, 310, 50))
-for i in range(20):
-    b.addjoint(Joint(380 + i * 8, 100, 8))
-b.fix()
+def poele(x, y, b):
+    s = Shape(b, [
+        (0, 0),
+        (30, 20),
+        (200, 20),
+        (230, 0),
+        (245, 5),
+        (250, 20),
+        (240, 30),
+        (215, 45),
+        (15, 45),
+        (-10, 30),
+        (-20, 20),
+        (-15, 5),
+    ])
+    s.move(x, y)
+    return s
 
-score=Score()
+def main():
+    running = True
+    c = crepe(380, 100)
 
-image = pygame.image.load("fondcrepe.jpg")
-size= (1280,1280)
-image = pygame.transform.scale(image, size)
+    s = poele(320, 300, c)
 
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    launched = False
+    pressed = False
+    angle = math.pi / 6
+    running = True
     
-    keys = pygame.key.get_pressed()
-    if(keys[pygame.K_UP]):
-        s.move(s.x, s.y - 3)
-    if(keys[pygame.K_DOWN]):
-        s.move(s.x, s.y + 3)
-    if(keys[pygame.K_LEFT]):
-        s.move(s.x - 3, s.y)
-    if(keys[pygame.K_RIGHT]):
-        s.move(s.x + 3, s.y)
-    if(keys[pygame.K_SPACE]):
-        if s.angle<=angle:
-            s.rotate(s.angle + .05)
-        pressed=True
-    elif pressed:
-        if s.angle>=-angle:
-            s.rotate(s.angle - .1)
-        else:
-            launched=True
-            pressed=False
-    elif launched:
-        if s.angle<=-0.05:
-            s.rotate(s.angle + .05)
-        else:
-            launched=False
+    score=Score()
 
-    if(keys[pygame.K_r]):
-        b.joints=[]
-        for i in range(20):
-            b.addjoint(Joint(s.x + 35 + i * 8, s.y-20, 8))
-        b.fix()
-        score.score=0
+    while running:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                return 0
+        
+        keys = pygame.key.get_pressed()
+        if(keys[pygame.K_UP]):
+            s.move(s.x, s.y - 3)
+        if(keys[pygame.K_DOWN]):
+            s.move(s.x, s.y + 3)
+        if(keys[pygame.K_LEFT]):
+            s.move(s.x - 3, s.y)
+        if(keys[pygame.K_RIGHT]):
+            s.move(s.x + 3, s.y)
+        if(keys[pygame.K_SPACE]):
+            if s.angle <= angle:
+                s.rotate(s.angle + .05)
+            pressed = True
+        elif pressed:
+            if s.angle >= -angle:
+                s.rotate(s.angle - .1)
+            else:
+                launched = True
+                pressed = False
+        elif launched:
+            if s.angle <= -0.05:
+                s.rotate(s.angle + .05)
+            else:
+                launched = False
 
-    b.update([s, ])
+        c.update([s, ])
 
+        if(c.joints[0].y > 1000 and c.joints[-1].y > 1000):
+            running = False
+            c.joints = []
+            score = 0
+            return 1
 
-    screen.blit(image,(0,-200))
+        #screen.fill((255,255,255))
+        image = pygame.image.load("fondcrepe.jpg")
+        size= (1280,1280)
+        image = pygame.transform.scale(image, size)
+        screen.blit(image,(0,-200))
 
-    # floor.draw()
-    s.draw()
-    b.draw()
-    score.draw(b)
-    pygame.display.flip()
-    dt = clock.tick(60)
+        # floor.draw()
+        s.draw()
+        c.draw()
+        score.draw(b)
+        pygame.display.flip()
+        dt = clock.tick(60)
+
+x = True
+while(x):
+    x = main()
