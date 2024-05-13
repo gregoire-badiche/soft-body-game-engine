@@ -8,6 +8,7 @@ from time import perf_counter
 G:float = .5
 K:float = 3
 INFINITY:int = 10000
+cosmic_latte: tuple = (255,248,231)
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -23,13 +24,15 @@ average:int =2              #average distance between the first and the last joi
 
 class Score:
     def __init__(self) -> None:
-        self.font=pygame.font.SysFont("segoescript", 40)
+        self.font_size=40
+        self.coordinates=(1026, 180+(57-self.font_size)/2)
+        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
+        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
         self.score=-1
         if self.score==-1:
             self.tic=round(perf_counter())
             self.score=0
             self.combo=1
-        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def update(self, azer) -> None:
         
@@ -45,15 +48,20 @@ class Score:
                 self.score+=10
                 self.tic = self.tac  
                 self.combo = 1   
-
-        
-                
-        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
+        self.text="Score : {}".format(self.score)
+        if len(self.text)>9:
+            self.font_size=int((50/len(self.text))*8)
+            self.coordinates=(1026, 180+(57-self.font_size)/2)
+            self.font=self.get_font(self.font_size)
+        self.rendred=self.font.render(self.text, True, cosmic_latte)
+       
         return
     def draw(self, azer) -> None:
         self.update(azer)
-        screen.blit(self.text, (1025, 179))
+        screen.blit(self.rendred, self.coordinates)
         return
+    def get_font(self, size):
+        return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
 
 
 
