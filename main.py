@@ -27,15 +27,15 @@ average:int =2              #average distance between the first and the last joi
 
 class Score:
     def __init__(self) -> None:
-        self.font_size=40
-        self.coordinates=(1026, 180+(57-self.font_size)/2)
-        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
-        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
         self.score=-1
         if self.score==-1:
             self.tic=round(perf_counter())
             self.score=0
             self.combo=1
+        self.font_size=40
+        self.coordinates=(1026, 180+(57-self.font_size)/2)
+        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
+        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
         return
     def update(self, azer) -> None:
         
