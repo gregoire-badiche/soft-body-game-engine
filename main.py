@@ -8,6 +8,8 @@ from time import sleep
 G:float = .5
 K:float = 3
 INFINITY:int = 10000
+cosmic_latte: tuple = (255,248,231)
+
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -17,6 +19,31 @@ running = True
 pressed=False
 launched=False
 angle=math.pi/6
+
+
+class Score:
+    def __init__(self) -> None:
+        self.score=0
+        self.font_size=40
+        self.coordinates=(1026, 180+(57-self.font_size)/2)
+        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
+        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
+        return
+    def update(self) -> None:
+        self.score+=1
+        self.text="Score : {}".format(self.score)
+        if len(self.text)>9:
+            self.font_size=int((50/len(self.text))*8)
+            self.coordinates=(1026, 180+(57-self.font_size)/2)
+            self.font=self.get_font(self.font_size)
+        self.rendred=self.font.render(self.text, True, cosmic_latte)
+        return
+    def draw(self) -> None:
+        self.update()
+        screen.blit(self.rendred, self.coordinates)
+        return
+    def get_font(self, size):
+        return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -449,6 +476,13 @@ s.move(320, 200)
 for i in range(20):
     b.addjoint(Joint(380 + i * 8, 100, 8))
 b.fix()
+
+score=Score()
+
+image = pygame.image.load("fondcrepe.jpg")
+size= (1280,1280)
+image = pygame.transform.scale(image, size)
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -483,14 +517,12 @@ while running:
 
     b.update([s, ])
 
-    #screen.fill((255,255,255))
-    image = pygame.image.load("fondcrepe.jpg")
-    size= (1280,1280)
-    image = pygame.transform.scale(image, size)
+
     screen.blit(image,(0,-200))
 
     # floor.draw()
     s.draw()
     b.draw()
+    score.draw()
     pygame.display.flip()
     dt = clock.tick(60)
