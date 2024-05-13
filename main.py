@@ -16,6 +16,9 @@ screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
 
 running = True
+pressed=False
+launched=False
+angle=math.pi/6
 
 pressed=False
 launched=False
@@ -539,6 +542,12 @@ while running:
             s.rotate(s.angle + .05)
         else:
             launched=False
+
+    if(keys[pygame.K_r]):
+        b.joints=[]
+        for i in range(20):
+            b.addjoint(Joint(380 + i * 8, 100, 8))
+        b.fix()
 
     b.update([s, ])
 
