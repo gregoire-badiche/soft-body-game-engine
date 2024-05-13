@@ -8,6 +8,7 @@ from time import sleep
 G:float = .5
 K:float = 3
 INFINITY:int = 10000
+cosmic_latte: tuple = (255,248,231)
 
 
 pygame.init()
@@ -23,7 +24,7 @@ class Score:
         self.font_size=40
         self.coordinates=(1026, 180+(57-self.font_size)/2)
         self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
-        self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
+        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
         return
     def update(self) -> None:
         self.score+=1
@@ -32,7 +33,7 @@ class Score:
             self.font_size=int((50/len(self.text))*8)
             self.coordinates=(1026, 180+(57-self.font_size)/2)
             self.font=self.get_font(self.font_size)
-        self.rendred=self.font.render(self.text, True, (0,0,0))
+        self.rendred=self.font.render(self.text, True, cosmic_latte)
         return
     def draw(self) -> None:
         self.update()
