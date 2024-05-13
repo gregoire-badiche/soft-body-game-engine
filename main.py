@@ -396,10 +396,11 @@ class Point:
         return
 
 class Shape:
-    def __init__(self, points:list = []) -> None:
+    def __init__(self, b:Blob, points:list = []) -> None:
         self.angle = 0
         self.x = 0
         self.y = 0
+        self.b = b
         self.points:list[Point] = []
         for p in points:
             self.points.append(Point(p))
@@ -417,7 +418,7 @@ class Shape:
         for p in self.points:
             p.move(self.x, self.y)
         for s in self.segments:
-            s.move(b)
+            s.move(self.b)
         return
 
     def rotate(self, angle:float) -> None:
@@ -425,7 +426,7 @@ class Shape:
         for p in self.points:
             p.rotate(self.angle)
         for s in self.segments:
-            s.move(b)
+            s.move(self.b)
         return
     
     def draw(self, *args):
@@ -437,65 +438,79 @@ class Shape:
         pygame.draw.polygon(screen, "black", p)
         return
 
-b = Blob()
+def crepe(x, y):
+    a = Blob()
+    a.joints = []
+    for i in range(20):
+        a.addjoint(Joint(x + i * 8, y, 8))
+    a.fix()
+    return a
 
-s = Shape([
-    (0, 0),
-    (30, 20),
-    (200, 20),
-    (230, 0),
-    (245, 5),
-    (250, 20),
-    (240, 30),
-    (215, 45),
-    (15, 45),
-    (-10, 30),
-    (-20, 20),
-    (-15, 5),
-])
-# floor = Shape([(0, 0), (1280, 0)])
-# floor.move(0, 700)
-s.move(320, 200)
-# sg = [
-#     # Segment((350, 325), (400, 350)),
-#     Segment((400, 350), (600, 350)),
-#     # Segment((650, 325), (600, 350))
-# ]
-# j.append(Join(642, 310, 50))
-for i in range(20):
-    b.addjoint(Joint(380 + i * 8, 100, 8))
-b.fix()
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+def poele(x, y, b):
+    s = Shape(b, [
+        (0, 0),
+        (30, 20),
+        (200, 20),
+        (230, 0),
+        (245, 5),
+        (250, 20),
+        (240, 30),
+        (215, 45),
+        (15, 45),
+        (-10, 30),
+        (-20, 20),
+        (-15, 5),
+    ])
+    s.move(x, y)
+    return s
+
+def main():
+    running = True
+    c = crepe(380, 100)
+
+    s = poele(320, 300, c)
+
+    while running:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                return 0
+        
+        keys = pygame.key.get_pressed()
+        if(keys[pygame.K_UP]):
+            s.move(s.x, s.y - 3)
+        if(keys[pygame.K_DOWN]):
+            s.move(s.x, s.y + 3)
+        if(keys[pygame.K_LEFT]):
+            s.move(s.x - 3, s.y)
+        if(keys[pygame.K_RIGHT]):
+            s.move(s.x + 3, s.y)
+        if(keys[pygame.K_SPACE]):
+            s.rotate(s.angle - .1)
+        if(keys[pygame.K_c]):
+            s.rotate(s.angle + .1)
+
+        c.update([s, ])
+
+        if(c.joints[0].y > 1000 and c.joints[-1].y > 1000):
             running = False
-    
-    keys = pygame.key.get_pressed()
-    if(keys[pygame.K_UP]):
-        s.move(s.x, s.y - 3)
-    if(keys[pygame.K_DOWN]):
-        s.move(s.x, s.y + 3)
-    if(keys[pygame.K_LEFT]):
-        s.move(s.x - 3, s.y)
-    if(keys[pygame.K_RIGHT]):
-        s.move(s.x + 3, s.y)
-    if(keys[pygame.K_SPACE]):
-        s.rotate(s.angle - .1)
-    if(keys[pygame.K_c]):
-        s.rotate(s.angle + .1)
+            c.joints = []
+            return 1
 
-    b.update([s, ])
+        #screen.fill((255,255,255))
+        image = pygame.image.load("fondcrepe.jpg")
+        size= (1280,1280)
+        image = pygame.transform.scale(image, size)
+        screen.blit(image,(0,-200))
 
-    #screen.fill((255,255,255))
-    image = pygame.image.load("fondcrepe.jpg")
-    size= (1280,1280)
-    image = pygame.transform.scale(image, size)
-    screen.blit(image,(0,-200))
+        # floor.draw()
+        s.draw()
+        c.draw()
+        pygame.display.flip()
+        dt = clock.tick(60)
 
-    # floor.draw()
-    s.draw()
-    b.draw()
-    pygame.display.flip()
-    dt = clock.tick(60)
+x = True
+while(x):
+    x = main()
