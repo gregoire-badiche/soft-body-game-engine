@@ -514,6 +514,12 @@ while running:
             s.rotate(s.angle + .05)
         else:
             launched=False
+    if(keys[pygame.K_r]):
+        b.joints=[]
+        for i in range(20):
+            b.addjoint(Joint(380 + i * 8, 100, 8))
+        b.fix()
+
 
     b.update([s, ])
 
