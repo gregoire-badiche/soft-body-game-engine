@@ -14,7 +14,6 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
-running = True
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -470,6 +469,11 @@ def main():
 
     s = poele(320, 300, c)
 
+    launched = False
+    pressed = False
+    angle = math.pi / 6
+    running = True
+
     while running:
         # poll for events
         # pygame.QUIT event means the user clicked X to close your window
@@ -488,9 +492,20 @@ def main():
         if(keys[pygame.K_RIGHT]):
             s.move(s.x + 3, s.y)
         if(keys[pygame.K_SPACE]):
-            s.rotate(s.angle - .1)
-        if(keys[pygame.K_c]):
-            s.rotate(s.angle + .1)
+            if s.angle <= angle:
+                s.rotate(s.angle + .05)
+            pressed = True
+        elif pressed:
+            if s.angle >= -angle:
+                s.rotate(s.angle - .1)
+            else:
+                launched = True
+                pressed = False
+        elif launched:
+            if s.angle <= -0.05:
+                s.rotate(s.angle + .05)
+            else:
+                launched = False
 
         c.update([s, ])
 
