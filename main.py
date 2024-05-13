@@ -577,7 +577,7 @@ def main():
         # floor.draw()
         s.draw()
         c.draw()
-        score.draw(b)
+        score.draw(c)
         pygame.display.flip()
         dt = clock.tick(60)
 
