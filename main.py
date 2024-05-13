@@ -3,44 +3,67 @@
 import pygame
 import math
 from random import randint
-from time import sleep
+from time import perf_counter
 
 G:float = .5
 K:float = 3
 INFINITY:int = 10000
 cosmic_latte: tuple = (255,248,231)
 
-
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
+
 running = True
 
+pressed=False
+launched=False
+angle=math.pi/6
+average:int =2              #average distance between the first and the last joint
 
 class Score:
     def __init__(self) -> None:
-        self.score=0
         self.font_size=40
         self.coordinates=(1026, 180+(57-self.font_size)/2)
         self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
         self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
+        self.score=-1
+        if self.score==-1:
+            self.tic=round(perf_counter())
+            self.score=0
+            self.combo=1
         return
-    def update(self) -> None:
-        self.score+=1
+    def update(self, azer) -> None:
+        
+        
+        joints_list = azer.get_joints()
+        if (round(joints_list[0].getX())+average >= round(joints_list[len(joints_list)-1].getX()))and (round(joints_list[0].getX())-average <= round(joints_list[len(joints_list)-1].getX())):
+            self.tac = round(perf_counter())
+            if self.tac - self.tic <= 2:
+                self.combo+=1
+                self.score+=10*self.combo
+                self.tic = self.tac 
+            else: 
+                self.score+=10
+                self.tic = self.tac  
+                self.combo = 1   
         self.text="Score : {}".format(self.score)
         if len(self.text)>9:
             self.font_size=int((50/len(self.text))*8)
             self.coordinates=(1026, 180+(57-self.font_size)/2)
             self.font=self.get_font(self.font_size)
         self.rendred=self.font.render(self.text, True, cosmic_latte)
+       
         return
-    def draw(self) -> None:
-        self.update()
+    def draw(self, azer) -> None:
+        self.update(azer)
         screen.blit(self.rendred, self.coordinates)
         return
     def get_font(self, size):
         return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
+
+
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -171,6 +194,8 @@ class Joint:
             self.rx += (x - xp) * ((self.distance * K - dist) / (dist)) * m * mp
             self.ry += (y - yp) * ((self.distance * K - dist) / (dist)) * m * mp
         return
+    def getX(self):
+        return self.x
 
 class Blob:
     def __init__(self, joints:list[Joint] = []) -> None:
@@ -179,6 +204,9 @@ class Blob:
 
     def __len__(self) -> int:
         return len(self.joints)
+
+    def get_joints(self):
+        return self.joints
 
     def addjoint(self, joint:Joint) -> int:
         self.joints.append(joint)
@@ -497,9 +525,20 @@ while running:
     if(keys[pygame.K_RIGHT]):
         s.move(s.x + 3, s.y)
     if(keys[pygame.K_SPACE]):
-        s.rotate(s.angle - .1)
-    if(keys[pygame.K_c]):
-        s.rotate(s.angle + .1)
+        if s.angle<=angle:
+            s.rotate(s.angle + .05)
+        pressed=True
+    elif pressed:
+        if s.angle>=-angle:
+            s.rotate(s.angle - .1)
+        else:
+            launched=True
+            pressed=False
+    elif launched:
+        if s.angle<=-0.05:
+            s.rotate(s.angle + .05)
+        else:
+            launched=False
 
     b.update([s, ])
 
@@ -509,6 +548,6 @@ while running:
     # floor.draw()
     s.draw()
     b.draw()
-    score.draw()
+    score.draw(b)
     pygame.display.flip()
     dt = clock.tick(60)
