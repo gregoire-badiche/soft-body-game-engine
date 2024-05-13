@@ -9,7 +9,6 @@ G:float = .5
 K:float = 3
 INFINITY:int = 10000
 
-
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
@@ -17,27 +16,36 @@ clock = pygame.time.Clock()
 
 running = True
 
+pressed=False
+launched=False
+angle=math.pi/6
+average:int =2              #average distance between the first and the last joint
 
 class Score:
     def __init__(self) -> None:
         self.font=pygame.font.SysFont("segoescript", 40)
-        self.score=0
+        self.score=-1
+        if self.score==-1:
+            self.tic=round(perf_counter())
+            self.score=0
+            self.combo=1
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
         return
     def update(self, azer) -> None:
-        self.flip = False
-        self.combo = 1
-        self.tic:float = 0
+        
+        
         joints_list = azer.get_joints()
-        if round(joints_list[0].getX()) == round(joints_list[len(joints_list)-1].getX()):
-            self.tac = perf_counter()
+        if (round(joints_list[0].getX())+average >= round(joints_list[len(joints_list)-1].getX()))and (round(joints_list[0].getX())-average <= round(joints_list[len(joints_list)-1].getX())):
+            self.tac = round(perf_counter())
             if self.tac - self.tic <= 2:
                 self.combo+=1
-                self.score+=100*self.combo
+                self.score+=10*self.combo
                 self.tic = self.tac 
             else: 
-                self.score+=100
-                self.tic = self.tac     
+                self.score+=10
+                self.tic = self.tac  
+                self.combo = 1   
+
         
                 
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
@@ -46,6 +54,8 @@ class Score:
         self.update(azer)
         screen.blit(self.text, (1025, 179))
         return
+
+
 
 class Joint:
     def __init__(self, x, y, distance:int, locked:bool = False, isedge:bool = False) -> None:
@@ -507,9 +517,20 @@ while running:
     if(keys[pygame.K_RIGHT]):
         s.move(s.x + 3, s.y)
     if(keys[pygame.K_SPACE]):
-        s.rotate(s.angle - .1)
-    if(keys[pygame.K_c]):
-        s.rotate(s.angle + .1)
+        if s.angle<=angle:
+            s.rotate(s.angle + .05)
+        pressed=True
+    elif pressed:
+        if s.angle>=-angle:
+            s.rotate(s.angle - .1)
+        else:
+            launched=True
+            pressed=False
+    elif launched:
+        if s.angle<=-0.05:
+            s.rotate(s.angle + .05)
+        else:
+            launched=False
 
     b.update([s, ])
 
