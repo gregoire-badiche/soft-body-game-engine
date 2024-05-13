@@ -27,21 +27,17 @@ class Score:
     def update(self, azer) -> None:
         self.flip = False
         self.combo = 1
-        self.tic:float
+        self.tic:float = 0
         joints_list = azer.get_joints()
         if round(joints_list[0].getX()) == round(joints_list[len(joints_list)-1].getX()):
             self.tac = perf_counter()
-            print("CCCCCCCCCCCCCC")
             if self.tac - self.tic <= 2:
                 self.combo+=1
                 self.score+=100*self.combo
                 self.tic = self.tac 
-                print("AAAAAAAAa")
             else: 
                 self.score+=100
-                self.tic = self.tac 
-                print("BBBBBBBBBB")
-            
+                self.tic = self.tac     
         
                 
         self.text=self.font.render("Score : {}".format(self.score), True, (0,0,0))
