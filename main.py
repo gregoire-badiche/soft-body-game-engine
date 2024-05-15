@@ -35,14 +35,15 @@ class Score:
     def update(self, flip) -> None:
         if(flip):
             self.tac = round(perf_counter())
-            if self.tac - self.tic <= 2:
-                self.combo+=1
-                self.score+=10*self.combo
-                self.tic = self.tac 
-            else: 
-                self.score+=10
-                self.tic = self.tac  
-                self.combo = 1   
+            if(self.tac - self.tic > .1):
+                if self.tac - self.tic <= 2:
+                    self.combo+=1
+                    self.score+=10*self.combo
+                    self.tic = self.tac 
+                else: 
+                    self.score+=10
+                    self.tic = self.tac  
+                    self.combo = 1   
         self.text="Score : {}".format(self.score)
         if len(self.text)>9:
             self.font_size=int((50/len(self.text))*8)
