@@ -362,6 +362,23 @@ class Segment:
         # Stolen from ChatGPT 3.5
         def dot_product(v1, v2):
             return v1[0] * v2[0] + v1[1] * v2[1]
+
+        def vector_subtraction(v1, v2):
+            return (v1[0] - v2[0], v1[1] - v2[1])
+
+        def scalar_multiplication(scalar, vector):
+            return (scalar * vector[0], scalar * vector[1])
+        
+        AB = vector_subtraction(B, A)
+        AC = vector_subtraction(C, A)
+        dot_AB_AC = dot_product(AB, AC)
+        length_AB_squared = dot_product(AB, AB)
+        scalar_projection_factor = dot_AB_AC / length_AB_squared
+        P = scalar_multiplication(scalar_projection_factor, AB)
+        projection_point = (P[0] + A[0], P[1] + A[1])
+        
+        return projection_point
+    
     def projection(self, C) -> tuple:
         return self._projection(self.A, self.B, C)
     
@@ -530,23 +547,23 @@ def options():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
+        screen.fill("white")
 
         OPTIONS_TEXT = get_font(55).render("Welcome to the COMMANDS", True, "Black")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 50))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+        screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         
         OPTIONS_COMMANDS = pygame.image.load("assets/commands.png")
         COMMANDS_RECT = OPTIONS_COMMANDS.get_rect(center=(640,350))
-        SCREEN.blit(OPTIONS_COMMANDS,COMMANDS_RECT)
+        screen.blit(OPTIONS_COMMANDS,COMMANDS_RECT)
 
 
         OPTIONS_BACK = Button(image=None, pos=(160, 650), 
                             text_input="BACK", font=get_font(55), base_color="Black", hovering_color="#b68f40")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
+        OPTIONS_BACK.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -560,7 +577,7 @@ def options():
 
 def main_menu():
     while True:
-        SCREEN.blit(BG, (0, 0))
+        screen.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -574,11 +591,11 @@ def main_menu():
         QUIT_BUTTON = Button(image=pygame.image.load("assets/Play-Rect.png"), pos=(180, 550), 
                             text_input="Quit", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
 
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
+        screen.blit(MENU_TEXT, MENU_RECT)
 
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
-            button.update(SCREEN)
+            button.update(screen)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -673,7 +690,7 @@ def main():
             score = 0
             return 1
 
-        image = pygame.image.load("fondcrepe.jpg")
+        image = pygame.image.load("assets/fondcrepe.jpg")
         size = (1280, 1280)
         image = pygame.transform.scale(image, size)
         screen.blit(image, (0, -200))
