@@ -2,6 +2,7 @@
 
 import pygame
 import math
+import time
 from random import randint
 from time import perf_counter
 
@@ -532,9 +533,9 @@ def poele(x, y, b):
 
 def main():
     running = True
-    c = crepe(380, 100)
+    c = crepe(580, 100)
 
-    s = poele(320, 300, c)
+    s = poele(520, 500, c)
 
     launched = False
     pressed = False
@@ -542,6 +543,9 @@ def main():
     running = True
     
     score = Score()
+    super_speed_active = False
+    super_speed_start_time = 0
+    super_speed_duration = 3  
 
     while running:
         # poll for events
@@ -550,17 +554,38 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
                 return 0
-        
+
         keys = pygame.key.get_pressed()
-        if(keys[pygame.K_UP]):
-            s.move(s.x, s.y - 3)
-        if(keys[pygame.K_DOWN]):
-            s.move(s.x, s.y + 3)
-        if(keys[pygame.K_LEFT]):
-            s.move(s.x - 3, s.y)
-        if(keys[pygame.K_RIGHT]):
-            s.move(s.x + 3, s.y)
-        if(keys[pygame.K_SPACE]):
+        current_time = time.time()
+        
+        move_speed = 3
+        super_move_speed = 7
+        
+        # Check if the chosen key is pressed
+        if keys[pygame.K_c]:
+            super_speed_active = True
+            super_speed_start_time = current_time
+
+        
+        if super_speed_active and (current_time - super_speed_start_time > super_speed_duration):
+            super_speed_active = False
+
+        
+        current_speed = super_move_speed if super_speed_active else move_speed
+
+        if keys[pygame.K_UP]:
+            s.move(s.x, s.y - current_speed)
+        
+        if keys[pygame.K_DOWN]:
+            s.move(s.x, s.y + current_speed)
+
+        if keys[pygame.K_LEFT]:
+            s.move(s.x - current_speed, s.y)
+
+        if keys[pygame.K_RIGHT]:
+            s.move(s.x + current_speed, s.y)
+
+        if keys[pygame.K_SPACE]:
             if s.angle <= angle:
                 s.rotate(s.angle + .05)
             pressed = True
@@ -578,19 +603,17 @@ def main():
 
         flip = c.update([s, ])
 
-        if(c.joints[0].y > 1000 and c.joints[-1].y > 1000):
+        if c.joints[0].y > 1000 and c.joints[-1].y > 1000:
             running = False
             c.joints = []
             score = 0
             return 1
 
-        #screen.fill((255,255,255))
         image = pygame.image.load("fondcrepe.jpg")
-        size= (1280,1280)
+        size = (1280, 1280)
         image = pygame.transform.scale(image, size)
-        screen.blit(image,(0,-200))
+        screen.blit(image, (0, -200))
 
-        # floor.draw()
         s.draw()
         c.draw()
         score.draw(flip)
@@ -598,5 +621,5 @@ def main():
         dt = clock.tick(60)
 
 x = True
-while(x):
+while x:
     x = main()
