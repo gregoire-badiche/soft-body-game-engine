@@ -1,5 +1,7 @@
 import pygame
 
+pygame.init()
+
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 

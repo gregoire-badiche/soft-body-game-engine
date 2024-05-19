@@ -4,15 +4,11 @@ import pygame
 import sys
 import math
 import time
-from random import randint
-from time import perf_counter, sleep
 
 from button import Button
 from score import Score
 from joint import Joint
 from blob import Blob
-from segment import Segment
-from point import Point
 from shape import Shape
 
 from constants import *
@@ -24,8 +20,6 @@ BG = pygame.transform.flip(BG, True, False)
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("ressources/VeniteAdoremus-rgRBA.ttf", size)
 
-pygame.init()
-screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
 
