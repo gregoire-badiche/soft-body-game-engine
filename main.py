@@ -4,6 +4,7 @@ import pygame
 import sys
 import math
 import time
+import webbrowser
 
 from button import Button
 from score import Score
@@ -61,9 +62,13 @@ def options():
 
         screen.fill("white")
 
-        OPTIONS_TEXT = get_font(55).render("Welcome to the COMMANDS", True, "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 50))
+        OPTIONS_TEXT = get_font(55).render("How to play", True, "Black")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 100))
         screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        SCORE_TEXT = get_font(35).render("Make the highest score by flipping your pan !", True, "Black")
+        SCORE_RECT = SCORE_TEXT.get_rect(center=(645,550))
+        screen.blit(SCORE_TEXT,SCORE_RECT)
 
         
         OPTIONS_COMMANDS = pygame.image.load("ressources/commands.png")
@@ -71,7 +76,7 @@ def options():
         screen.blit(OPTIONS_COMMANDS,COMMANDS_RECT)
 
 
-        OPTIONS_BACK = Button(image=None, pos=(160, 650), 
+        OPTIONS_BACK = Button(image=None, pos=(130, 665), 
                             text_input="BACK", font=get_font(55), base_color="Black", hovering_color="#b68f40")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
@@ -86,6 +91,80 @@ def options():
                     main_menu()
 
         pygame.display.update()
+
+def credits():
+     while True:
+        CREDITS_MOUSE_POS = pygame.mouse.get_pos()
+
+        screen.fill("white")
+
+        CREDITS_TEXT = get_font(55).render("Meet our Development team !", True, "Black")
+        CREDITS_RECT = CREDITS_TEXT.get_rect(center=(640, 150))
+        screen.blit(CREDITS_TEXT, CREDITS_RECT)
+
+        
+        BUTTON_OSCAR = Button(image= pygame.transform.scale (pygame.image.load("ressources/oscar.jpg"), (200,200) ), pos=(200,350),
+                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+        OSCAR_TEXT = get_font(15).render("Oscar Masdupuy", True, "Black")
+        OSCAR_RECT = OSCAR_TEXT.get_rect(center=(200,475))
+        screen.blit(OSCAR_TEXT,OSCAR_RECT)
+        
+        BUTTON_VALENTIN = Button(image= pygame.transform.scale (pygame.image.load("ressources/valentin.jpg"), (200,200) ), pos=(422,350),
+                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+        VALENTIN_TEXT = get_font(15).render("Valentin Auffray", True, "Black")
+        VALENTIN_RECT = VALENTIN_TEXT.get_rect(center=(422,475))
+        screen.blit(VALENTIN_TEXT,VALENTIN_RECT)
+        
+        BUTTON_GREGOIRE = Button(image= pygame.transform.scale (pygame.image.load("ressources/gregoire.jpg"), (200,200) ), pos=(645,350),
+                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+        GREGOIRE_TEXT = get_font(15).render("Grégoire Badiche", True, "Black")
+        GREGOIRE_RECT = GREGOIRE_TEXT.get_rect(center=(645,475))
+        screen.blit(GREGOIRE_TEXT,GREGOIRE_RECT)
+        
+        BUTTON_JUDE = Button(image= pygame.transform.scale (pygame.image.load("ressources/jude.jpg"), (200,200) ), pos=(867,350),
+                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+        JUDE_TEXT = get_font(15).render("Jude Guehl", True, "Black")
+        JUDE_RECT = JUDE_TEXT.get_rect(center=(867,475))
+        screen.blit(JUDE_TEXT,JUDE_RECT)
+        
+        BUTTON_SAMY = Button(image= pygame.transform.scale (pygame.image.load("ressources/samy.jpg"), (200,200) ), pos=(1090,350),
+                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+        SAMY_TEXT = get_font(15).render("Samy Gharnaout", True, "Black")
+        SAMY_RECT = SAMY_TEXT.get_rect(center=(1090,475))
+        screen.blit(SAMY_TEXT,SAMY_RECT)  
+
+        for button in [BUTTON_OSCAR,BUTTON_VALENTIN,BUTTON_JUDE,BUTTON_GREGOIRE,BUTTON_SAMY]:
+            button.changeColor(CREDITS_MOUSE_POS)
+            button.update(screen)
+
+
+        CREDITS_BACK = Button(image=None, pos=(130, 665), 
+                            text_input="BACK", font=get_font(55), base_color="Black", hovering_color="#b68f40")
+
+        CREDITS_BACK.changeColor(CREDITS_MOUSE_POS)
+        CREDITS_BACK.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if CREDITS_BACK.checkForInput(CREDITS_MOUSE_POS):
+                    main_menu()
+                if BUTTON_OSCAR.checkForInput(CREDITS_MOUSE_POS):
+                    webbrowser.open("https://www.linkedin.com/in/oscar-masdupuy-375246250/")
+                if BUTTON_VALENTIN.checkForInput(CREDITS_MOUSE_POS):
+                    webbrowser.open("https://www.linkedin.com/in/valentin-auffray-024230251/")
+                if BUTTON_GREGOIRE.checkForInput(CREDITS_MOUSE_POS):
+                    webbrowser.open("https://www.linkedin.com/in/gregoire-badiche/")
+                if BUTTON_JUDE.checkForInput(CREDITS_MOUSE_POS):
+                    webbrowser.open("https://www.linkedin.com/in/jude-guehl-366932294/")
+                if BUTTON_SAMY.checkForInput(CREDITS_MOUSE_POS):
+                    webbrowser.open("https://www.linkedin.com/in/samy-gharnaout/")
+                
+
+        pygame.display.update()
+
 
 def main_menu():
     while True:
@@ -102,10 +181,12 @@ def main_menu():
                             text_input="Commands", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
         QUIT_BUTTON = Button(image=pygame.image.load("ressources/Play-Rect.png"), pos=(180, 550), 
                             text_input="Quit", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
+        CREDITS_BUTTON = Button(image=pygame.image.load("ressources/Play-Rect.png"),pos=(1125,650),
+                            text_input="Credits", font=get_font(50), base_color="#d7fcd4", hovering_color="White" )
 
         screen.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON, CREDITS_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(screen)
         
@@ -118,6 +199,8 @@ def main_menu():
                     main()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
+                if CREDITS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    credits()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
