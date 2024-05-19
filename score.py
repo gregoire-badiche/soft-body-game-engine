@@ -1,0 +1,57 @@
+import pygame
+import sys
+import math
+import time
+from random import randint
+from time import perf_counter, sleep
+
+
+screen = pygame.display.set_mode((1280, 720))
+screen.fill((255, 255, 255))
+
+G:float = .5
+K:float = 3
+F:float = .05
+INFINITY:int = 10000
+cosmic_latte: tuple = (255,248,231)
+
+class Score:
+    def __init__(self) -> None:
+        self.score=-1
+        if self.score==-1:
+            self.tic=round(perf_counter())
+            self.score=0
+            self.combo=1
+        self.font_size=40
+        self.coordinates=(1026, 180+(57-self.font_size)/2)
+        self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
+        self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
+        return
+
+    def update(self, flip) -> None:
+        if(flip):
+            self.tac = round(perf_counter())
+            if(self.tac - self.tic > .1):
+                if self.tac - self.tic <= 2:
+                    self.combo+=1
+                    self.score+=10*self.combo
+                    self.tic = self.tac 
+                else: 
+                    self.score+=10
+                    self.tic = self.tac  
+                    self.combo = 1   
+        self.text="Score : {}".format(self.score)
+        if len(self.text)>9:
+            self.font_size=int((50/len(self.text))*8)
+            self.coordinates=(1026, 180+(57-self.font_size)/2)
+            self.font=self.get_font(self.font_size)
+        self.rendred=self.font.render(self.text, True, cosmic_latte)
+        return
+    
+    def draw(self, flip) -> None:
+        self.update(flip)
+        screen.blit(self.rendred, self.coordinates)
+        return
+    
+    def get_font(self, size):
+        return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
