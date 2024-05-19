@@ -1,4 +1,4 @@
-# Crepe Pygame Project
+# Crepe Bretonne Simulator
 
 This project is a simple game created with Pygame where you control a pan to flip a crepe. The game includes standard movement features and a "super move" feature activated by a special key. 
 
