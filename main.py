@@ -31,32 +31,32 @@ class Score:
         self.font=pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", self.font_size)
         self.text=self.font.render("Score : {}".format(self.score), True, cosmic_latte)
         return
-    def update(self, azer) -> None:
-        
-        
-        joints_list = azer.get_joints()
-        if (round(joints_list[0].getX())+average >= round(joints_list[len(joints_list)-1].getX()))and (round(joints_list[0].getX())-average <= round(joints_list[len(joints_list)-1].getX())):
+
+    def update(self, flip) -> None:
+        if(flip):
             self.tac = round(perf_counter())
-            if self.tac - self.tic <= 2:
-                self.combo+=1
-                self.score+=10*self.combo
-                self.tic = self.tac 
-            else: 
-                self.score+=10
-                self.tic = self.tac  
-                self.combo = 1   
+            if(self.tac - self.tic > .1):
+                if self.tac - self.tic <= 2:
+                    self.combo+=1
+                    self.score+=10*self.combo
+                    self.tic = self.tac 
+                else: 
+                    self.score+=10
+                    self.tic = self.tac  
+                    self.combo = 1   
         self.text="Score : {}".format(self.score)
         if len(self.text)>9:
             self.font_size=int((50/len(self.text))*8)
             self.coordinates=(1026, 180+(57-self.font_size)/2)
             self.font=self.get_font(self.font_size)
         self.rendred=self.font.render(self.text, True, cosmic_latte)
-       
         return
-    def draw(self, azer) -> None:
-        self.update(azer)
+    
+    def draw(self, flip) -> None:
+        self.update(flip)
         screen.blit(self.rendred, self.coordinates)
         return
+    
     def get_font(self, size):
         return pygame.font.Font("ressources/fonts/VeniteAdoremus-rgRBA.ttf", size)
 
@@ -286,15 +286,31 @@ class Blob:
             j[i].move()
         return
 
-    def update(self, shapes:list, *args) -> None:
+    def update(self, shapes:list, *args) -> bool:
         self.simpleforces()
         self.rigidity()
         self.tension()
         self.collisions(shapes)
+        res = self.checkflip()
         self.move()
         self.preventnoclip(shapes)
-        return
+        return res
     
+    def checkflip(self) -> bool:
+        j1 = self.joints[0]
+        j2 = self.joints[-1]
+        return Segment._intersect(
+            (j1.x, j1.y),
+            (j1.x + j1.speedx, j1.y + j1.speedy),
+            (j2.x + j2.speedx, INFINITY),
+            (j2.x + j2.speedx, -1 * INFINITY)
+        ) or Segment._intersect(
+            (j1.x, j1.y),
+            (j1.x + j1.speedx, j1.y + j1.speedy),
+            (j2.x, INFINITY),
+            (j2.x, -1 * INFINITY)
+        )
+
     def draw(self, *args) -> None:
         j = self.joints
         for i in range(len(j)):
@@ -525,7 +541,7 @@ def main():
     angle = math.pi / 6
     running = True
     
-    score=Score()
+    score = Score()
 
     while running:
         # poll for events
@@ -560,7 +576,7 @@ def main():
             else:
                 launched = False
 
-        c.update([s, ])
+        flip = c.update([s, ])
 
         if(c.joints[0].y > 1000 and c.joints[-1].y > 1000):
             running = False
@@ -577,7 +593,7 @@ def main():
         # floor.draw()
         s.draw()
         c.draw()
-        score.draw(c)
+        score.draw(flip)
         pygame.display.flip()
         dt = clock.tick(60)
 
