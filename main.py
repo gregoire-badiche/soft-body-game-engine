@@ -15,12 +15,12 @@ F:float = .05
 INFINITY:int = 10000
 cosmic_latte: tuple = (255,248,231)
 
-BG = pygame.image.load("assets/Background.jpg")
+BG = pygame.image.load("ressources/Background.jpg")
 BG = pygame.transform.scale(BG, (1280, 720))
 BG = pygame.transform.flip(BG, True, False)
 
 def get_font(size): # Returns Press-Start-2P in the desired size
-    return pygame.font.Font("assets/VeniteAdoremus-rgRBA.ttf", size)
+    return pygame.font.Font("ressources/VeniteAdoremus-rgRBA.ttf", size)
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -554,7 +554,7 @@ def options():
         screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
         
-        OPTIONS_COMMANDS = pygame.image.load("assets/commands.png")
+        OPTIONS_COMMANDS = pygame.image.load("ressources/commands.png")
         COMMANDS_RECT = OPTIONS_COMMANDS.get_rect(center=(640,350))
         screen.blit(OPTIONS_COMMANDS,COMMANDS_RECT)
 
@@ -584,11 +584,11 @@ def main_menu():
         MENU_TEXT = get_font(75).render("BRETON SIMULATOR 2024", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play-Rect.png"), pos=(180, 250), 
+        PLAY_BUTTON = Button(image=pygame.image.load("ressources/Play-Rect.png"), pos=(180, 250), 
                             text_input="Play", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options-Rect.png"), pos=(290, 400), 
+        OPTIONS_BUTTON = Button(image=pygame.image.load("ressources/Options-Rect.png"), pos=(290, 400), 
                             text_input="Commands", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Play-Rect.png"), pos=(180, 550), 
+        QUIT_BUTTON = Button(image=pygame.image.load("ressources/Play-Rect.png"), pos=(180, 550), 
                             text_input="Quit", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
 
         screen.blit(MENU_TEXT, MENU_RECT)
@@ -690,7 +690,7 @@ def main():
             score = 0
             return 1
 
-        image = pygame.image.load("assets/fondcrepe.jpg")
+        image = pygame.image.load("ressources/fondcrepe.jpg")
         size = (1280, 1280)
         image = pygame.transform.scale(image, size)
         screen.blit(image, (0, -200))
