@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import pygame
+import sys
 import math
 import time
 from random import randint
-from time import perf_counter
+from time import perf_counter, sleep
+
+from button import Button
 
 G:float = .5
 K:float = 3
@@ -12,13 +15,22 @@ F:float = .05
 INFINITY:int = 10000
 cosmic_latte: tuple = (255,248,231)
 
+BG = pygame.image.load("assets/Background.jpg")
+BG = pygame.transform.scale(BG, (1280, 720))
+BG = pygame.transform.flip(BG, True, False)
+
+def get_font(size): # Returns Press-Start-2P in the desired size
+    return pygame.font.Font("assets/VeniteAdoremus-rgRBA.ttf", size)
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 screen.fill((255, 255, 255))
 clock = pygame.time.Clock()
 
+pygame.display.set_caption("Menu")
+
 running = True
-average:int =2              #average distance between the first and the last joint
+average:int = 2 #average distance between the first and the last joint
 
 class Score:
     def __init__(self) -> None:
@@ -350,23 +362,6 @@ class Segment:
         # Stolen from ChatGPT 3.5
         def dot_product(v1, v2):
             return v1[0] * v2[0] + v1[1] * v2[1]
-
-        def vector_subtraction(v1, v2):
-            return (v1[0] - v2[0], v1[1] - v2[1])
-
-        def scalar_multiplication(scalar, vector):
-            return (scalar * vector[0], scalar * vector[1])
-        
-        AB = vector_subtraction(B, A)
-        AC = vector_subtraction(C, A)
-        dot_AB_AC = dot_product(AB, AC)
-        length_AB_squared = dot_product(AB, AB)
-        scalar_projection_factor = dot_AB_AC / length_AB_squared
-        P = scalar_multiplication(scalar_projection_factor, AB)
-        projection_point = (P[0] + A[0], P[1] + A[1])
-        
-        return projection_point
-
     def projection(self, C) -> tuple:
         return self._projection(self.A, self.B, C)
     
@@ -531,6 +526,75 @@ def poele(x, y, b):
     s.move(x, y)
     return s
 
+def options():
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("white")
+
+        OPTIONS_TEXT = get_font(55).render("Welcome to the COMMANDS", True, "Black")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 50))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        
+        OPTIONS_COMMANDS = pygame.image.load("assets/commands.png")
+        COMMANDS_RECT = OPTIONS_COMMANDS.get_rect(center=(640,350))
+        SCREEN.blit(OPTIONS_COMMANDS,COMMANDS_RECT)
+
+
+        OPTIONS_BACK = Button(image=None, pos=(160, 650), 
+                            text_input="BACK", font=get_font(55), base_color="Black", hovering_color="#b68f40")
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+def main_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(75).render("BRETON SIMULATOR 2024", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play-Rect.png"), pos=(180, 250), 
+                            text_input="Play", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options-Rect.png"), pos=(290, 400), 
+                            text_input="Commands", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Play-Rect.png"), pos=(180, 550), 
+                            text_input="Quit", font=get_font(65), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main()
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+        
 def main():
     running = True
     c = crepe(580, 100)
@@ -622,4 +686,4 @@ def main():
 
 x = True
 while x:
-    x = main()
+    main_menu()
