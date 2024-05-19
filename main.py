@@ -15,11 +15,7 @@ from segment import Segment
 from point import Point
 from shape import Shape
 
-G:float = .5
-K:float = 3
-F:float = .05
-INFINITY:int = 10000
-cosmic_latte: tuple = (255,248,231)
+from constants import *
 
 BG = pygame.image.load("ressources/Background.jpg")
 BG = pygame.transform.scale(BG, (1280, 720))

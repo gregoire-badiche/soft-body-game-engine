@@ -1,23 +1,8 @@
-import pygame
-import sys
-import math
-import time
-from random import randint
-from time import perf_counter, sleep
-from joint import Joint
+from constants import *
 from segment import Segment
 
-screen = pygame.display.set_mode((1280, 720))
-screen.fill((255, 255, 255))
-
-G:float = .5
-K:float = 3
-F:float = .05
-INFINITY:int = 10000
-cosmic_latte: tuple = (255,248,231)
-
 class Blob:
-    def __init__(self, joints:list[Joint] = []) -> None:
+    def __init__(self, joints:list = []) -> None:
         self.joints = joints
         return
 
@@ -27,7 +12,7 @@ class Blob:
     def get_joints(self):
         return self.joints
 
-    def addjoint(self, joint:Joint) -> int:
+    def addjoint(self, joint) -> int:
         self.joints.append(joint)
         return len(self.joints) - 1
     

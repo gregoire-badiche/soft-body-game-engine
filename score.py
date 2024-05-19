@@ -1,19 +1,7 @@
 import pygame
-import sys
-import math
-import time
-from random import randint
-from time import perf_counter, sleep
+from time import perf_counter
 
-
-screen = pygame.display.set_mode((1280, 720))
-screen.fill((255, 255, 255))
-
-G:float = .5
-K:float = 3
-F:float = .05
-INFINITY:int = 10000
-cosmic_latte: tuple = (255,248,231)
+from constants import *
 
 class Score:
     def __init__(self) -> None:
