@@ -529,7 +529,7 @@ def main():
     score = Score()
     super_speed_active = False
     super_speed_start_time = 0
-    super_speed_duration = 3  # seconds
+    super_speed_duration = 3  
 
     while running:
         # poll for events
