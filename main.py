@@ -93,7 +93,7 @@ def options():
         pygame.display.update()
 
 def credits():
-     while True:
+    while True:
         CREDITS_MOUSE_POS = pygame.mouse.get_pos()
 
         screen.fill("white")
@@ -104,31 +104,31 @@ def credits():
 
         
         BUTTON_OSCAR = Button(image= pygame.transform.scale (pygame.image.load("ressources/oscar.jpg"), (200,200) ), pos=(200,350),
-                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         OSCAR_TEXT = get_font(15).render("Oscar Masdupuy", True, "Black")
         OSCAR_RECT = OSCAR_TEXT.get_rect(center=(200,475))
         screen.blit(OSCAR_TEXT,OSCAR_RECT)
         
         BUTTON_VALENTIN = Button(image= pygame.transform.scale (pygame.image.load("ressources/valentin.jpg"), (200,200) ), pos=(422,350),
-                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         VALENTIN_TEXT = get_font(15).render("Valentin Auffray", True, "Black")
         VALENTIN_RECT = VALENTIN_TEXT.get_rect(center=(422,475))
         screen.blit(VALENTIN_TEXT,VALENTIN_RECT)
         
         BUTTON_GREGOIRE = Button(image= pygame.transform.scale (pygame.image.load("ressources/gregoire.jpg"), (200,200) ), pos=(645,350),
-                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         GREGOIRE_TEXT = get_font(15).render("Grégoire Badiche", True, "Black")
         GREGOIRE_RECT = GREGOIRE_TEXT.get_rect(center=(645,475))
         screen.blit(GREGOIRE_TEXT,GREGOIRE_RECT)
         
         BUTTON_JUDE = Button(image= pygame.transform.scale (pygame.image.load("ressources/jude.jpg"), (200,200) ), pos=(867,350),
-                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         JUDE_TEXT = get_font(15).render("Jude Guehl", True, "Black")
         JUDE_RECT = JUDE_TEXT.get_rect(center=(867,475))
         screen.blit(JUDE_TEXT,JUDE_RECT)
         
         BUTTON_SAMY = Button(image= pygame.transform.scale (pygame.image.load("ressources/samy.jpg"), (200,200) ), pos=(1090,350),
-                               text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
+                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         SAMY_TEXT = get_font(15).render("Samy Gharnaout", True, "Black")
         SAMY_RECT = SAMY_TEXT.get_rect(center=(1090,475))
         screen.blit(SAMY_TEXT,SAMY_RECT)  
@@ -228,8 +228,8 @@ def main():
         # pygame.QUIT event means the user clicked X to close your window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-                return 0
+                pygame.quit()
+                sys.exit(0)
 
         keys = pygame.key.get_pressed()
         current_time = time.time()
