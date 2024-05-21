@@ -282,6 +282,7 @@ def main():
         if c.joints[0].y > 1000 and c.joints[-1].y > 1000:
             running = False
             c.joints = []
+            score.edit_chart()
             score = 0
             return 1
 
@@ -295,6 +296,7 @@ def main():
         score.draw(flip)
         pygame.display.flip()
         dt = clock.tick(60)
+
 
 x = True
 while x:
