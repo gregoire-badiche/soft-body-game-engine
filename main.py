@@ -18,6 +18,11 @@ BG = pygame.image.load("ressources/Background.jpg")
 BG = pygame.transform.scale(BG, (1280, 720))
 BG = pygame.transform.flip(BG, True, False)
 
+pygame.mixer.init()
+pygame.mixer.music.load("ressources/musique.mp3")
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.06)
+
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("ressources/VeniteAdoremus-rgRBA.ttf", size)
 
@@ -115,7 +120,7 @@ def credits():
         VALENTIN_RECT = VALENTIN_TEXT.get_rect(center=(422,475))
         screen.blit(VALENTIN_TEXT,VALENTIN_RECT)
         
-        BUTTON_GREGOIRE = Button(image= pygame.transform.scale (pygame.image.load("ressources/gregoire.jpg"), (200,200) ), pos=(645,350),
+        BUTTON_GREGOIRE = Button(image= pygame.transform.scale (pygame.image.load("ressources/gregoire.png"), (200,200) ), pos=(645,350),
                                text_input="", font=get_font(65), base_color="#d7fcd4", hovering_color="White" )
         GREGOIRE_TEXT = get_font(15).render("Grégoire Badiche", True, "Black")
         GREGOIRE_RECT = GREGOIRE_TEXT.get_rect(center=(645,475))
@@ -206,7 +211,38 @@ def main_menu():
                     sys.exit()
 
         pygame.display.update()
+
+def game_over():
+    while True:
+        pygame.mixer.music.stop()
+        screen.fill("Black")
         
+        GAMEOVER_MOUSE_POS = pygame.mouse.get_pos()
+
+        GAMEOVER_TEXT = get_font(55).render("GAME OVER", True, "Red")
+        GAMEOVER_RECT = GAMEOVER_TEXT.get_rect(center=(640, 360))
+        screen.blit(GAMEOVER_TEXT, GAMEOVER_RECT)
+
+
+        GAMEOVER_BACK = Button(image=None, pos=(130, 665), 
+                            text_input="BACK", font=get_font(55), base_color="White", hovering_color="Red")
+        
+
+        GAMEOVER_BACK.changeColor(GAMEOVER_MOUSE_POS)
+        GAMEOVER_BACK.update(screen)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if GAMEOVER_BACK.checkForInput(GAMEOVER_MOUSE_POS):
+                    pygame.mixer.music.play(-1)
+                    main_menu()
+
+        pygame.display.update()
+
 def main():
     running = True
     c = crepe(580, 100)
@@ -280,10 +316,7 @@ def main():
         flip = c.update([s, ])
 
         if c.joints[0].y > 1000 and c.joints[-1].y > 1000:
-            running = False
-            c.joints = []
-            score.edit_chart()
-            score = 0
+            game_over()
             return 1
 
         image = pygame.image.load("ressources/fondcrepe.jpg")
