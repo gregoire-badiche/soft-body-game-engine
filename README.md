@@ -60,7 +60,7 @@ crepe-pygame-project/
 ### Pan Control
 
 - **Standard Movement**: Use the arrow keys to move the pan.
-- **Super Move**: Hold the `C` key to activate the super move for 3 seconds.
+- **Secret Move**: Hold the `C` key to activate the super move for 3 seconds.
 - **Flip the Crepe**: Press the spacebar to tilt the pan and launch the crepe.
 
 ### Pan Rotation
