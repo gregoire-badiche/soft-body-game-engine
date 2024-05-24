@@ -38,8 +38,10 @@ class Score:
         self.rendred=self.font.render(self.text, True, cosmic_latte)
         return
     
-    def draw(self, flip) -> None:
+    def draw(self, flip, coordinates = False) -> None:
         self.update(flip)
+        if coordinates:
+            self.coordinates = coordinates
         screen.blit(self.rendred, self.coordinates)
         return
     

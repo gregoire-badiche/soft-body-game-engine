@@ -212,7 +212,7 @@ def main_menu():
 
         pygame.display.update()
 
-def game_over():
+def game_over(score):
     while True:
         pygame.mixer.music.stop()
         screen.fill("Black")
@@ -223,6 +223,7 @@ def game_over():
         GAMEOVER_RECT = GAMEOVER_TEXT.get_rect(center=(640, 360))
         screen.blit(GAMEOVER_TEXT, GAMEOVER_RECT)
 
+        score.draw(0, (515, 390+(57-score.font_size)/2))
 
         GAMEOVER_BACK = Button(image=None, pos=(130, 665), 
                             text_input="BACK", font=get_font(55), base_color="White", hovering_color="Red")
@@ -316,7 +317,7 @@ def main():
         flip = c.update([s, ])
 
         if c.joints[0].y > 1000 and c.joints[-1].y > 1000:
-            game_over()
+            game_over(score)
             return 1
 
         image = pygame.image.load("ressources/fondcrepe.jpg")
